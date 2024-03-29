@@ -6,30 +6,38 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct DetailsPage: View {
+    
     @Environment(\.presentationMode) var presentationMode
+    var product : ProductModel
+    @Binding var cart: [ShoppingCartItem]
+    @State private var quantity: Int = 1
+    
         
     var body: some View {
         ZStack{
             Color(.white)
             VStack{
                 ScrollView{
-                    Image("img_2")
+                    KFImage(URL(string:product.imageURL))
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .edgesIgnoringSafeArea(.top)
                     
                     
-                    DescriptionView()
-                        .offset(y: -100)
+                    DescriptionView(product: product, quantity:$quantity)
+                        .padding(.top, -20)
+//                        .offset(y: -100)
+                        
                     
                 }
                 HStack{
                     VStack(alignment: .leading){
                         Text("   Price")
                             .font(.title2)
-                        Text("    Rs. 2800")
+                        Text("Rs."+product.price)
                             .font(.title3)
                             .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     }
@@ -37,19 +45,26 @@ struct DetailsPage: View {
                     
                     Spacer()
                     
-                    NavigationLink(destination: ShoppingCartView()) {
-                        Button(action: {
-                            // Add code to add the item to the shopping cart
-                        }) {
-                            Text("Add to Cart")
-                                .foregroundColor(.white)
-                                .fontWeight(.bold)
-                                .padding()
-                                .padding(.horizontal)
-                                .background(Color.brown)
-                                .cornerRadius(10.0)
+//                    NavigationLink(destination: ShoppingCartView(cartItems: [])) {
+                    Button(action: {
+                        let index : Int = cart.firstIndex(where:{ $0.product.id == product.id} ) ?? -1
+                        
+                        if index>0 {
+                            
+                        }else{
+                            
                         }
+                    }) {
+                        Text("Add to Cart")
+                            .foregroundColor(.white)
+                            .fontWeight(.bold)
+                            .padding()
+                            .padding(.horizontal)
+                            .background(Color.brown)
+                            .cornerRadius(10.0)
                     }
+//                    }
+
                 }
                 .padding()
                 .background(Color.white)
@@ -83,17 +98,18 @@ struct DetailsPage: View {
 
 struct DetailsPage_Previews: PreviewProvider {
     static var previews: some View {
-        DetailsPage()
+        DetailsPage(product: product1, cart: .constant([item1]))
     }
 }
 struct DescriptionView: View {
     //@StateObject private var viewModel = ShoppingCartViewModel()
-    @State private var quantity: Int = 1
+    var product : ProductModel
+    @Binding var quantity : Int
     var body: some View {
         
         VStack(alignment: .leading){
             HStack{
-                Text("Women")
+                Text(product.sex)
                     .font(.caption)
                     .fontWeight(.light)
                 Spacer()
@@ -129,17 +145,17 @@ struct DescriptionView: View {
             }
             
                 
-            Text("2-piece sweatshirt and skirt set")
+            Text(product.name)
                 .font(.headline)
                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
             
             HStack(spacing: 2) {
-                ForEach(0..<5) { item in
+                ForEach(0..<product.rating) { item in
                     Image("star")
                         .resizable()
                         .frame(width: 10, height: 10)
                 }
-                Text("(4.8)")
+                Text("(\(product.rating).0)")
                     .font(.caption)
                     .opacity(0.5)
                     .padding(.leading, 8)
@@ -150,7 +166,7 @@ struct DescriptionView: View {
                 .fontWeight(.medium)
                 .padding(.vertical, 8)
             
-            Text("This set includes a sweatshirt top and a  woven skirt, both made of soft brushed fabric, with adjustable elastication and concealed zip and press stud closure.")
+            Text(product.description)
                 .font(.caption)
                 .lineSpacing(8.0)
                 .opacity(0.6)
@@ -197,7 +213,7 @@ struct DescriptionView: View {
         .padding()
         .padding(.top)
         .background(Color.white)
-        .cornerRadius(40.0)
+        .cornerRadius(30.0)
     }
 }
 
