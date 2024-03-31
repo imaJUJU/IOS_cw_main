@@ -1,10 +1,3 @@
-//
-//  DetailsPage.swift
-//  IOS_cw_main
-//
-//  Created by Imanthi Abeyratne on 2024-03-28.
-//
-
 import SwiftUI
 import Kingfisher
 
@@ -37,7 +30,7 @@ struct DetailsPage: View {
                     VStack(alignment: .leading){
                         Text("   Price")
                             .font(.title2)
-                        Text("Rs."+product.price)
+                        Text("Rs.\(product.price)")
                             .font(.title3)
                             .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     }
@@ -50,9 +43,9 @@ struct DetailsPage: View {
                         let index : Int = cart.firstIndex(where:{ $0.product.id == product.id} ) ?? -1
                         
                         if index>0 {
-                            
+                            cart[index].quantity += quantity
                         }else{
-                            
+                            cart.append(ShoppingCartItem(product: product, quantity: quantity, price: Double(product.price)! * Double(quantity)))
                         }
                     }) {
                         Text("Add to Cart")

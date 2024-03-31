@@ -25,7 +25,7 @@ struct HomePage: View {
                             AdvertisementView()
                             
                             // Search Bar Section
-                            SearchBarView()
+                            SearchBarView(searchText: .constant(""), onSearch: {})
                             
                             HStack {
                                 Text("Categories")
@@ -74,7 +74,7 @@ struct HomePage: View {
                 
                 // Move the HStack inside the ZStack
                 HStack {
-                    NavigationLink(destination: HomePage()) {
+                    NavigationLink(destination: HomePage(cartObj: $cartObj.wrappedValue)) {
                         Image("home_brown")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -84,8 +84,8 @@ struct HomePage: View {
                     
                     HomeBar(image: Image("heart_white")) {}
                     
-                    let cartItems: [ShoppingCartItem] = [] // Populate this array with your shopping cart items
-                    NavigationLink(destination: ShoppingCartView(cartItems: cartItems)) {
+                    
+                    NavigationLink(destination: ShoppingCartView(cartItems: $cartObj)) {
                         Image("cart_white")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -102,7 +102,10 @@ struct HomePage: View {
                 .padding()
                 .shadow(color: Color.black.opacity(0.15), radius: 8, x: 2, y: 6)
                 .frame(maxHeight: .infinity, alignment: .bottom)
+            }.onAppear{
+                print(self.cartObj)
             }
+            .navigationBarHidden(true)
         }
     }
 }

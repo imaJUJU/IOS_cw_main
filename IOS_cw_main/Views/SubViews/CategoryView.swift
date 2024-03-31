@@ -40,6 +40,7 @@ struct CategoryView: View {
             }
             .padding()
         }
+        
         if let selectedCategory = selectedCategory {
             CategoryImageView(category: selectedCategory.name, prds: prds, cart: $cart)
                 .padding(.top, 20)

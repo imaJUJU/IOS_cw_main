@@ -7,11 +7,10 @@
 
 import Foundation
 
-import Foundation
-
 struct ShoppingCartItem: Identifiable {
-    let id = UUID()
-    let product: ProductModel
-    let quantity: Int
-    let price: Double
+    var id = UUID()
+    var product: ProductModel
+    var quantity: Int
+    var price: Double
+    
 }

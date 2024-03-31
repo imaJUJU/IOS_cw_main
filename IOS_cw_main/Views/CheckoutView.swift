@@ -13,6 +13,7 @@ struct CheckoutView: View {
     @State private var shippingAddress: String = ""
     @State private var isAgreeToTerms: Bool = false
     @State private var showAlert: Bool = false
+    @State private var isNavigateHome: Bool = false
     
     // Calculate subtotal, discount, delivery fee, and total payment
     var subtotal: Double {
@@ -46,23 +47,23 @@ struct CheckoutView: View {
                     HStack {
                         Text("Subtotal:")
                         Spacer()
-                        Text("$\(String(format: "%.2f", subtotal))")
+                        Text("Rs.\(String(format: "%.2f", subtotal))")
                     }
                     HStack {
                         Text("Discount:")
                         Spacer()
-                        Text("-$\(String(format: "%.2f", discount))")
+                        Text("- Rs.\(String(format: "%.2f", discount))")
                     }
                     HStack {
                         Text("Delivery Fee:")
                         Spacer()
-                        Text("$\(String(format: "%.2f", deliveryFee))")
+                        Text("Rs.\(String(format: "%.2f", deliveryFee))")
                     }
                     HStack {
                         Text("Total Payment:")
                             .font(.headline)
                         Spacer()
-                        Text("$\(String(format: "%.2f", totalPayment))")
+                        Text("Rs.\(String(format: "%.2f", totalPayment))")
                             .font(.headline)
                     }
                 }
@@ -80,9 +81,13 @@ struct CheckoutView: View {
                     .cornerRadius(10.0)
             }
             .alert(isPresented: $showAlert) {
-                Alert(title: Text("Order Confirmed"), message: Text("Your order has been successfully placed."), dismissButton: .default(Text("OK")))
+                Alert(title: Text("Order Confirmed"), message: Text("Your order has been successfully placed."), dismissButton: .default(Text("OK")){
+                    isNavigateHome.toggle()
+                })
             }
             .padding()
+            
+            NavigationLink(destination: HomePage(), isActive: $isNavigateHome){}
             
             Spacer()
         }

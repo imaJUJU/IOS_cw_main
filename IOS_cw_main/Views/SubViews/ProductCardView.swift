@@ -8,7 +8,6 @@
 import SwiftUI
 import Kingfisher
 
-
 struct ProductCardView: View {
     let product: ProductModel
     @Binding var cart: [ShoppingCartItem]
@@ -34,7 +33,7 @@ struct ProductCardView: View {
                 }
                 Spacer()
                 
-                Text("Rs."+product.price)
+                Text("Rs.\(product.price)")
                     .font(.caption)
                     .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                 
