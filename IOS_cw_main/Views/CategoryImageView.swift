@@ -17,7 +17,7 @@ struct CategoryImageView: View {
             Text(category)
                 .font(.title)
                 .fontWeight(.bold)
-                .padding(.top, 20)
+                
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {

@@ -12,5 +12,5 @@ struct ShoppingCartItem: Identifiable {
     var product: ProductModel
     var quantity: Int
     var price: Double
-    
+   
 }

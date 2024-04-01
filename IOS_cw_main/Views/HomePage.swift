@@ -9,101 +9,114 @@ import SwiftUI
 
 struct HomePage: View {
     
-    @State var productObj : [ProductModel] = products
+    @State var productObj : [ProductModel] = []
     @State var cartObj : [ShoppingCartItem] = []
+    
+    @StateObject private var homeViewModel = HomeViewModel()
     
     var body: some View {
         NavigationStack {
             ZStack {
-                ScrollView(.vertical, showsIndicators: false) {
-                    ZStack {
-                        Color.white
-                            .edgesIgnoringSafeArea(.all)
-                        
-                        VStack {
-                            // Advertisement Section
-                            AdvertisementView()
+                if homeViewModel.isLoading {
+                    Color.white.ignoresSafeArea(.all)
+                } else {
+                    ScrollView(.vertical, showsIndicators: false) {
+                        ZStack {
+                            Color.white
+                                .edgesIgnoringSafeArea(.all)
                             
-                            // Search Bar Section
-                            SearchBarView(searchText: .constant(""), onSearch: {})
-                            
-                            HStack {
-                                Text("Categories")
-                                    .font(.headline)
-                                    .foregroundColor(.black)
-                                    .padding(.leading, 30) // Push to the left
-                                    .padding(.top, 20)
+                            VStack {
+                                // Advertisement Section
+                                AdvertisementView()
                                 
-                                Spacer() // Push the "See All" text to the right
+                                // Search Bar Section
+//                                SearchBarView(searchText: .constant(""), onSearch: {})
                                 
-                                Text("See All")
-                                    .font(.callout)
-                                    .foregroundColor(.black)
-                                    .padding(.trailing, 10) // Push to the right
-                            }
-                            
-                            CategoryView(prds: productObj, cart: $cartObj)
-                            
-                            Text("Popular")
-                                .font(.custom("Optima", size: 25))
-                                .fontWeight(.bold)
-                                .foregroundColor(.black)
-                                .padding(.leading, 0) // Push to the left
-                                .padding()
-                            
-                            ScrollView(.horizontal, showsIndicators: false) {
                                 HStack {
-                                    ForEach(0..<productObj.count) { index in
-                                        NavigationLink(
-                                            destination: DetailsPage(product: productObj[index], cart: $cartObj),
-                                            label: {
-                                                ProductCardView(product: productObj[index], cart: $cartObj, size: 150)
-                                            })
-                                        .navigationBarHidden(true)
+                                    Text("Categories")
+                                        .font(.headline)
                                         .foregroundColor(.black)
-                                    }
-                                    .padding(.trailing)
+                                        .padding(.leading, 30) // Push to the left
+                                        .padding(.top, 20)
+                                    
+                                    Spacer() // Push the "See All" text to the right
+                                    
+                                    Text("See All")
+                                        .font(.callout)
+                                        .foregroundColor(.black)
+                                        .padding(.trailing, 10) // Push to the right
                                 }
-                                .padding(.leading)
+                                
+                                CategoryView(prds: productObj, cart: $cartObj)
+                                
+                                Text("Popular")
+                                    .font(.custom("Optima", size: 25))
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.black)
+                                    .padding(.leading, 0) // Push to the left
+                                    .padding()
+                                
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack {
+                                        if productObj.count > 0 {
+                                            ForEach(0..<productObj.count) { index in
+                                                NavigationLink(
+                                                    destination: DetailsPage(product: productObj[index], cart: $cartObj),
+                                                    label: {
+                                                        ProductCardView(product: productObj[index], cart: $cartObj, size: 150)
+                                                    })
+                                                .navigationBarHidden(true)
+                                                .foregroundColor(.black)
+                                            }
+                                            .padding(.trailing)
+                                        }
+                                    }
+                                    .padding(.leading)
+                                }
+                                
+                                .padding(.bottom, 100)
                             }
-                            
-                            .padding(.bottom, 100)
                         }
                     }
-                }
-                
-                // Move the HStack inside the ZStack
-                HStack {
-                    NavigationLink(destination: HomePage(cartObj: $cartObj.wrappedValue)) {
-                        Image("home_brown")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 80, height: 30)
+                    
+                    // Move the HStack inside the ZStack
+                    HStack {
+                        NavigationLink(destination: HomePage(cartObj: $cartObj.wrappedValue)) {
+                            Image("home_brown")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 80, height: 30)
 
-                    }
-                    
-                    HomeBar(image: Image("heart_white")) {}
-                    
-                    
-                    NavigationLink(destination: ShoppingCartView(cartItems: $cartObj)) {
-                        Image("cart_white")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 80, height: 30)
-                    }
+                        }
+                        
+                        NavigationLink(destination: SearchingPageView(productObj: $productObj)) {
+                            Image("SEARCH")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 80, height: 30)
+                                .colorInvert()
+                        }
+                       
+                        NavigationLink(destination: ShoppingCartView(cartItems: $cartObj)) {
+                            Image("cart_white")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 80, height: 30)
+                        }
 
-                    
-                    HomeBar(image: Image("user_white")) {}
-                    
+                        
+                        HomeBar(image: Image("user_white")) {}
+                        
+                    }
+                    .padding()
+                    .background(Color.black)
+                    .clipShape(Capsule())
+                    .padding()
+                    .shadow(color: Color.black.opacity(0.15), radius: 8, x: 2, y: 6)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
                 }
-                .padding()
-                .background(Color.black)
-                .clipShape(Capsule())
-                .padding()
-                .shadow(color: Color.black.opacity(0.15), radius: 8, x: 2, y: 6)
-                .frame(maxHeight: .infinity, alignment: .bottom)
             }.onAppear{
-                print(self.cartObj)
+                homeViewModel.getProducts(prdts: $productObj)
             }
             .navigationBarHidden(true)
         }

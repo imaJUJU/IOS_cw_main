@@ -95,59 +95,52 @@ struct DetailsPage_Previews: PreviewProvider {
     }
 }
 struct DescriptionView: View {
-    //@StateObject private var viewModel = ShoppingCartViewModel()
-    var product : ProductModel
-    @Binding var quantity : Int
+    var product: ProductModel
+    @Binding var quantity: Int
+    @State private var selectedColor: Color?
+    @State private var selectedSize: String?
+    
     var body: some View {
-        
-        VStack(alignment: .leading){
-            HStack{
+        VStack(alignment: .leading) {
+            HStack {
                 Text(product.sex)
                     .font(.caption)
                     .fontWeight(.light)
                 Spacer()
                 Button(action: {
-                                if quantity > 1 {
-                                    quantity -= 1
-                                }
-                            }) {
-                                Image(systemName: "minus")
-                                    .padding(.all, 8)
-                    
+                    if quantity > 1 {
+                        quantity -= 1
+                    }
+                }) {
+                    Image(systemName: "minus")
+                        .padding(.all, 8)
                 }
                 .frame(width: 25, height: 25)
                 .overlay(RoundedRectangle(cornerRadius: 50).stroke())
                 .foregroundColor(.black)
-                
                 Text("\(quantity)")
-                                .font(.title2)
-                                .fontWeight(.semibold)
-                                .padding(.horizontal, 2)
-                
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .padding(.horizontal, 2)
                 Button(action: {
-                                quantity += 1
-                            }) {
-                                Image(systemName: "plus")
-                                    .padding(.all, 8)
-                    
+                    quantity += 1
+                }) {
+                    Image(systemName: "plus")
+                        .padding(.all, 8)
                 }
                 .frame(width: 25, height: 25)
                 .overlay(RoundedRectangle(cornerRadius: 50).stroke())
                 .foregroundColor(.black)
-                
             }
-            
-                
             Text(product.name)
                 .font(.headline)
-                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-            
+                .fontWeight(.bold)
             HStack(spacing: 2) {
-                ForEach(0..<product.rating) { item in
-                    Image("star")
-                        .resizable()
-                        .frame(width: 10, height: 10)
-                }
+                            ForEach(0..<product.rating) { item in
+                                Image("star")
+                                    .resizable()
+                                    .frame(width: 10, height: 10)
+                            }
                 Text("(\(product.rating).0)")
                     .font(.caption)
                     .opacity(0.5)
@@ -158,50 +151,42 @@ struct DescriptionView: View {
                 .font(.caption)
                 .fontWeight(.medium)
                 .padding(.vertical, 8)
-            
             Text(product.description)
                 .font(.caption)
                 .lineSpacing(8.0)
                 .opacity(0.6)
-            
-            HStack{
-                VStack(alignment: .leading){
+            HStack {
+                VStack(alignment: .leading) {
                     Text("Select Color")
                         .font(.caption)
                         .fontWeight(.semibold)
-                    
-                    HStack{
-                        ColorDotView(color: .brown, text:"")
-                        ColorDotView(color: .pink, text:"")
-                        ColorDotView(color: .black, text:"")
-                        ColorDotView(color: .blue, text:"")
+                    HStack {
+                        ForEach(ProductColor.allCases, id: \.self) { color in
+                            ColorDotView(color: color.color, text: "", isSelected: selectedColor == color.color)
+                                .onTapGesture {
+                                    selectedColor = color.color
+                                }
+                        }
                     }
                 }
-                .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
-                
-                VStack(alignment: .leading){
+                .frame(maxWidth: .infinity, alignment: .leading)
+                VStack(alignment: .leading) {
                     Text("Select Size")
                         .font(.caption)
                         .fontWeight(.semibold)
-                    
                     HStack {
-                        ColorDotView(color: .gray, text:"XS")
-                        ColorDotView(color: .gray, text:"S")
-                        ColorDotView(color: .gray, text:"M")
-                        ColorDotView(color: .gray, text:"L")
-                        ColorDotView(color: .gray, text:"XL")
-                        ColorDotView(color: .gray, text:"XXL")
-                   
+                        ForEach(ProductSize.allCases, id: \.self) { size in
+                            ColorDotView(color: .gray, text: size.rawValue, isSelected: selectedSize == size.rawValue)
+                                .onTapGesture {
+                                    selectedSize = size.rawValue
+                                }
+                        }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                    
-                
             }
             .padding(.vertical)
             
-            
-            
+            Spacer()
         }
         .padding()
         .padding(.top)
@@ -213,15 +198,37 @@ struct DescriptionView: View {
 struct ColorDotView: View {
     let color: Color
     let text: String
+    let isSelected: Bool
     
     var body: some View {
         ZStack {
             Circle()
                 .fill(color)
-                .frame(width: 20, height: 20) // Adjust size as needed
+                .frame(width: 20, height: 20)
             Text(text)
                 .foregroundColor(.white)
                 .font(.caption2)
         }
+        .overlay(Circle().stroke(Color.black, lineWidth: isSelected ? 2 : 0))
     }
+}
+
+enum ProductColor: String, CaseIterable {
+    case brown = "Brown"
+    case pink = "Pink"
+    case black = "Black"
+    case blue = "Blue"
+    
+    var color: Color {
+        switch self {
+        case .brown: return .brown
+        case .pink: return .pink
+        case .black: return .black
+        case .blue: return .blue
+        }
+    }
+}
+
+enum ProductSize: String, CaseIterable {
+    case XS, S, M, L, XL, XXL
 }

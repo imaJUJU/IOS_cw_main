@@ -7,7 +7,7 @@
 
 import Foundation
 
-let cat1 = Category(name: "Dress")
+let cat1 = Category(name: "Dresses")
 let cat2 = Category(name: "TShirt")
 let cat3 = Category(name: "Pants")
 let cat4 = Category(name: "Accessories")

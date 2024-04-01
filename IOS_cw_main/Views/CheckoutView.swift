@@ -21,8 +21,8 @@ struct CheckoutView: View {
     }
     
     // Assuming discount, delivery fee, and total payment are hardcoded for this example
-    let discount: Double = 5.00
-    let deliveryFee: Double = 3.00
+    let discount: Double = 250.00
+    let deliveryFee: Double = 90.00
     var totalPayment: Double {
         subtotal - discount + deliveryFee
     }
